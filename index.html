@@ -87,10 +87,12 @@
   <script src="./script.js"></script>
   <script>
     const toCurrency = v => {
-      return v.toLocaleString('pt-BR', {
+      return new Intl.NumberFormat('pt-BR', {
         style: 'currency',
         currency: 'BRL',
-      });
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(v);
     };
     document
       .getElementById('initialInvestment-form')
