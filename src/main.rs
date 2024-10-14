@@ -57,8 +57,8 @@ async fn main() -> std::io::Result<()> {
                     .allow_any_method()
                     .allow_any_origin(),
             )
-            .service(Files::new("/", "./static").index_file("index.html"))
             .service(calculate)
+            .service(Files::new("/", "./static").index_file("index.html"))
     })
     .bind(("0.0.0.0", 4000))?
     .run()
