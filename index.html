@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br"></html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora de Investimentos</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container" id="app">
+      <h1 class="center-align">Calculadora de Investimentos</h1>
+      <form id="investment-form">
+        <div class="input-field">
+          <label for="investment">Investimento inicial</label>
+          <input type="number" id="investment" required />
+        </div>
+        <div class="input-field">
+          <label for="monthly_income">Rendimento percentual mensal (em %)</label>
+          <input type="number" id="monthly_income" required />
+        </div>
+        <div class="input-field">
+          <label for="months">Meses</label>
+          <input type="number" id="months" required />
+        </div>
+        <button type="submit" class="btn waves-effect waves-light">
+          Calcular
+        </button>
+      </form>
+      <div class="section" id="results"></div>
+    </div>
+
+    <script>
+      const toCurrency = v => {
+        return v.toLocaleString('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        });
+      };
+      document
+        .getElementById('investment-form')
+        .addEventListener('submit', async function (event) {
+          event.preventDefault();
+
+          const investment = document.getElementById('investment').value;
+          const monthly_income =
+            document.getElementById('monthly_income').value;
+          const months = document.getElementById('months').value;
+
+          const response = await fetch('http://localhost:4000/calculate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              investment: Number(investment),
+              monthly_income: Number(monthly_income) / 100,
+              months: Number(months),
+            }),
+          });
+
+          const data = await response.json();
+          displayResults(data);
+        });
+
+      function displayResults(data) {
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = `
+          <h2>Resultados</h2>
+          <p>Dividendo Total: ${toCurrency(data.total_dividend)}</p>
+          <p>Total: ${toCurrency(data.total)}</p>
+          <h3>Previsões</h3>
+          <ul class="collection">
+            ${data.predictions
+              .map(
+                (prediction) => `
+                <li class="collection-item">
+                  Mês: ${
+                    prediction.month
+                  }, Dividendo: ${toCurrency(prediction.dividend)}, Total: ${toCurrency(prediction.total)}
+                </li>
+              `
+              )
+              .join('')}
+          </ul>
+        `;
+      }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+      html, * {
+        font-family: 'Poppins', sans-serif;
+      }
+      #app {
+        margin-top: 50px;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      form {
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
+  </body>
+</html>
