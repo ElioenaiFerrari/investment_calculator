@@ -1,73 +1,82 @@
 <!DOCTYPE html>
-<html lang="pt-br"></html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Calculadora de Investimentos</title>
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div class="container" id="app">
-      <h1 class="center-align">Calculadora de Investimentos</h1>
-      <form id="investment-form">
-        <div class="input-field">
-          <label for="investment">Investimento inicial</label>
-          <input type="number" id="investment" required />
-        </div>
-        <div class="input-field">
-          <label for="monthly_income">Rendimento percentual mensal (em %)</label>
-          <input type="number" id="monthly_income" required min="1" max="100" step="1" />
-        </div>
-        <div class="input-field">
-          <label for="months">Meses</label>
-          <input type="number" id="months" required />
-        </div>
-        <button type="submit" class="btn waves-effect waves-light">
-          Calcular
-        </button>
-      </form>
-      <div class="section" id="results"></div>
+<html lang="pt-br">
+
+</html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora de Investimentos</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="container" id="app">
+    <div class="row" style="display: flex; flex-direction: column; align-items: center;">
+      <img src="./pix.png" alt="QR Code para doações via Pix" style="width: 80px; height: 80px; margin: 20px auto;" />
+      <p style="font-size: 12px; color:grey;">Se você gostou deste projeto e deseja apoiar, considere fazer uma doação
+        via Pix. A sua contribuição nos ajuda
+        a manter o projeto e a criar mais conteúdo gratuito para a comunidade.</p>
     </div>
+    <div class="col s12">
+      <h1 class="center-align" style="font-size: 21px;">Calculadora de Investimentos</h1>
+    </div>
+    <form id="investment-form">
+      <div class="input-field">
+        <label for="investment">Investimento inicial</label>
+        <input type="number" id="investment" required />
+      </div>
+      <div class="input-field">
+        <label for="monthly_income">Rendimento percentual mensal (em %)</label>
+        <input type="number" id="monthly_income" required min="1" max="100" step="1" />
+      </div>
+      <div class="input-field">
+        <label for="months">Meses</label>
+        <input type="number" id="months" required />
+      </div>
+      <button type="submit" class="btn waves-effect waves-light">
+        Calcular
+      </button>
+    </form>
+    <div class="section" id="results"></div>
+  </div>
 
-    <script>
-      const toCurrency = v => {
-        return v.toLocaleString('pt-BR', {
-          style: 'currency',
-          currency: 'BRL',
+  <script>
+    const toCurrency = v => {
+      return v.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+      });
+    };
+    document
+      .getElementById('investment-form')
+      .addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const investment = document.getElementById('investment').value;
+        const monthly_income =
+          document.getElementById('monthly_income').value;
+        const months = document.getElementById('months').value;
+
+        const response = await fetch('http://localhost:4000/calculate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            investment: Number(investment),
+            monthly_income: Number(monthly_income) / 100,
+            months: Number(months),
+          }),
         });
-      };
-      document
-        .getElementById('investment-form')
-        .addEventListener('submit', async function (event) {
-          event.preventDefault();
 
-          const investment = document.getElementById('investment').value;
-          const monthly_income =
-            document.getElementById('monthly_income').value;
-          const months = document.getElementById('months').value;
+        const data = await response.json();
+        displayResults(data);
+      });
 
-          const response = await fetch('http://localhost:4000/calculate', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              investment: Number(investment),
-              monthly_income: Number(monthly_income) / 100,
-              months: Number(months),
-            }),
-          });
-
-          const data = await response.json();
-          displayResults(data);
-        });
-
-      function displayResults(data) {
-        const resultsDiv = document.getElementById('results');
-        resultsDiv.innerHTML = `
+    function displayResults(data) {
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = `
             <h2 class="center-align">Resultados</h2>
             <div class="card-panel teal lighten-4">
             <p><strong>Dividendo Total:</strong> ${toCurrency(data.total_dividend)}</p>
@@ -76,8 +85,8 @@
             <h3 class="center-align">Previsões</h3>
             <ul class="collection" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
             ${data.predictions
-              .map(
-              (prediction) => `
+          .map(
+            (prediction) => `
               <li class="collection-item" style="display: flex; flex-direction: column;">
               <span class="title"><strong>Mês:</strong> ${prediction.month}</span>
               <p>
@@ -86,29 +95,33 @@
               </p>
               </li>
               `
-              )
-              .join('')}
+          )
+          .join('')}
             </ul>
         `;
-      }
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
 
-      html, * {
-        font-family: 'Poppins', sans-serif;
-      }
-      #app {
-        margin-top: 50px;
-        max-width: 600px;
-        margin: 0 auto;
-      }
-      form {
-        margin: 0 auto;
-        display: flex;
-        flex-direction: column;
-      }
-    </style>
-  </body>
+    html,
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    #app {
+      margin-top: 50px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    form {
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+</body>
+
 </html>
