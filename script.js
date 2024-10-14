@@ -38,24 +38,25 @@ function calculateInvestment(
   const res = {
     predictions: [],
     totalDividend: 0.0,
+    totalMonthlyInvestment: 0.0,
     total: 0.0,
   };
 
   for (let i = 0; i < months; i++) {
     const dividend = monthlyIncome * (initialInvestment + res.totalDividend);
     res.totalDividend += dividend;
+    res.totalMonthlyInvestment += monthlyInvestment;
 
     const prediction = {
       month: i + 1,
       dividend: dividend,
       monthlyInvestment: monthlyInvestment,
-      total: initialInvestment + res.totalDividend + monthlyInvestment,
+      total: initialInvestment + res.totalDividend + res.totalMonthlyInvestment,
     };
     res.predictions.push(prediction);
   }
 
   res.total =
-    initialInvestment + res.totalDividend + monthlyInvestment * months;
-  res.totalMonthlyInvestment = monthlyInvestment * months;
+    initialInvestment + res.totalDividend + res.totalMonthlyInvestment;
   return res;
 }
