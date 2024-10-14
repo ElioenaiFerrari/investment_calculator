@@ -68,23 +68,27 @@
       function displayResults(data) {
         const resultsDiv = document.getElementById('results');
         resultsDiv.innerHTML = `
-          <h2>Resultados</h2>
-          <p>Dividendo Total: ${toCurrency(data.total_dividend)}</p>
-          <p>Total: ${toCurrency(data.total)}</p>
-          <h3>Previsões</h3>
-          <ul class="collection">
+            <h2 class="center-align">Resultados</h2>
+            <div class="card-panel teal lighten-4">
+            <p><strong>Dividendo Total:</strong> ${toCurrency(data.total_dividend)}</p>
+            <p><strong>Total:</strong> ${toCurrency(data.total)}</p>
+            </div>
+            <h3 class="center-align">Previsões</h3>
+            <ul class="collection" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
             ${data.predictions
               .map(
-                (prediction) => `
-                <li class="collection-item">
-                  Mês: ${
-                    prediction.month
-                  }, Dividendo: ${toCurrency(prediction.dividend)}, Total: ${toCurrency(prediction.total)}
-                </li>
+              (prediction) => `
+              <li class="collection-item" style="display: flex; flex-direction: column;">
+              <span class="title"><strong>Mês:</strong> ${prediction.month}</span>
+              <p>
+              <strong>Dividendo:</strong> ${toCurrency(prediction.dividend)}<br>
+              <strong>Total:</strong> ${toCurrency(prediction.total)}
+              </p>
+              </li>
               `
               )
               .join('')}
-          </ul>
+            </ul>
         `;
       }
     </script>
