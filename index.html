@@ -1,46 +1,59 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 
-</html>
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Calculadora de Investimentos</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap">
+  <style>
+    html,
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #1a202c;
+      color: #cbd5e0;
+    }
+  </style>
 </head>
 
 <body>
-  <div class="container" id="app">
-    <div class="row" style="display: flex; flex-direction: column; align-items: center;">
-      <img src="./pix.png" alt="QR Code para doações via Pix" style="width: 80px; height: 80px; margin: 20px auto;" />
-      <p style="font-size: 12px; color:grey;">Se você gostou deste projeto e deseja apoiar, considere fazer uma doação
+  <div class="container mx-auto mt-12 max-w-lg" id="app">
+    <div class="flex flex-col items-center mb-10">
+      <img src="./pix.png" alt="QR Code para doações via Pix" class="w-20 h-20 mb-4" />
+      <p class="text-xs text-gray-400 text-center">Se você gostou deste projeto e deseja apoiar, considere fazer uma
+        doação
         via Pix. A sua contribuição nos ajuda
         a manter o projeto e a criar mais conteúdo gratuito para a comunidade.</p>
     </div>
-    <div class="col s12">
-      <h1 class="center-align" style="font-size: 21px;">Calculadora de Investimentos</h1>
+    <div class="text-center">
+      <h1 class="text-xl">Calculadora de Investimentos</h1>
     </div>
-    <form id="investment-form">
-      <div class="input-field">
-        <label for="investment">Investimento inicial</label>
-        <input type="number" id="investment" required />
+    <form id="investment-form" class="mt-6">
+      <div class="mb-4">
+        <label for="investment" class="block text-sm">Investimento inicial</label>
+        <input type="number" id="investment" required class="w-full px-3 py-2 bg-gray-700 text-white rounded" />
       </div>
-      <div class="input-field">
-        <label for="monthly_income">Rendimento percentual mensal (em %)</label>
-        <input type="number" id="monthly_income" required min="1" max="100" step="1" />
+      <div class="mb-4">
+        <label for="monthly_income" class="block text-sm">Rendimento percentual mensal (em %)</label>
+        <input type="number" id="monthly_income" required min="1" max="100" step="1"
+          class="w-full px-3 py-2 bg-gray-700 text-white rounded" />
       </div>
-      <div class="input-field">
-        <label for="months">Meses</label>
-        <input type="number" id="months" required />
+      <div class="mb-4">
+        <label for="months" class="block text-sm">Meses</label>
+        <input type="number" id="months" required class="w-full px-3 py-2 bg-gray-700 text-white rounded" />
       </div>
-      <button type="submit" class="btn waves-effect waves-light">
+      <button type="submit" class="w-full py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
         Calcular
       </button>
     </form>
-    <div class="section" id="results"></div>
+    <div class="section mt-6" id="results"></div>
   </div>
 
+  <script src="./script.js"></script>
   <script>
     const toCurrency = v => {
       return v.toLocaleString('pt-BR', {
@@ -61,7 +74,6 @@
         const monthlyIncomeValue = Number(monthly_income) / 100;
         const monthsValue = Number(months);
 
-
         const data = calculateInvestment(investmentValue, monthlyIncomeValue, monthsValue);
         displayResults(data);
       });
@@ -69,18 +81,18 @@
     function displayResults(data) {
       const resultsDiv = document.getElementById('results');
       resultsDiv.innerHTML = `
-            <h2 class="center-align">Resultados</h2>
-            <div class="card-panel teal lighten-4">
-            <p><strong>Dividendo Total:</strong> ${toCurrency(data.total_dividend)}</p>
-            <p><strong>Total:</strong> ${toCurrency(data.total)}</p>
+            <h2 class="text-center text-2xl font-bold mb-4">Resultados</h2>
+            <div class="p-6 bg-teal-600 text-white rounded-lg shadow-lg">
+            <p class="text-lg"><strong>Dividendo Total:</strong> ${toCurrency(data.total_dividend)}</p>
+            <p class="text-lg"><strong>Total:</strong> ${toCurrency(data.total)}</p>
             </div>
-            <h3 class="center-align">Previsões</h3>
-            <ul class="collection" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+            <h3 class="text-center text-lg mt-4">Previsões</h3>
+            <ul class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
             ${data.predictions
           .map(
             (prediction) => `
-              <li class="collection-item" style="display: flex; flex-direction: column;">
-              <span class="title"><strong>Mês:</strong> ${prediction.month}</span>
+              <li class="p-4 bg-gray-700 text-white rounded">
+              <span class="block font-bold">Mês: ${prediction.month}</span>
               <p>
               <strong>Dividendo:</strong> ${toCurrency(prediction.dividend)}<br>
               <strong>Total:</strong> ${toCurrency(prediction.total)}
@@ -93,28 +105,6 @@
         `;
     }
   </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-  <script src="./script.js"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-
-    html,
-    * {
-      font-family: 'Poppins', sans-serif;
-    }
-
-    #app {
-      margin-top: 50px;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    form {
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-    }
-  </style>
 </body>
 
 </html>
