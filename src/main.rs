@@ -1,4 +1,5 @@
 use actix_cors::Cors;
+use actix_files::Files;
 use actix_web::{post, web, App, HttpResponse, HttpServer};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
@@ -56,6 +57,7 @@ async fn main() -> std::io::Result<()> {
                     .allow_any_method()
                     .allow_any_origin(),
             )
+            .service(Files::new("/", "./static").index_file("index.html"))
             .service(calculate)
     })
     .bind(("0.0.0.0", 4000))?
