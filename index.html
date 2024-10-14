@@ -17,11 +17,37 @@
       background-color: #1a202c;
       color: #cbd5e0;
     }
+
+    @media (max-width: 640px) {
+      .container {
+        padding: 0 1rem;
+      }
+
+      h1 {
+        font-size: 1.25rem;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      h3 {
+        font-size: 1rem;
+      }
+
+      p {
+        font-size: 0.875rem;
+      }
+
+      button {
+        font-size: 0.875rem;
+      }
+    }
   </style>
 </head>
 
 <body>
-  <div class="container mx-auto mt-12 max-w-lg" id="app">
+  <div class="container mx-auto mt-12 max-w-lg px-4" id="app">
     <div class="flex flex-col items-center mb-10">
       <img src="./pix.png" alt="QR Code para doações via Pix" class="w-20 h-20 mb-4" />
       <p class="text-xs text-gray-400 text-center">Se você gostou deste projeto e deseja apoiar, considere fazer uma
